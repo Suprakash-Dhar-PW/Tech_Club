@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply bg-violet-950 text-white overflow-x-hidden;
+    font-family: 'Inter', sans-serif;
+}
+
+.text-glow {
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.8), 0 0 20px rgba(124, 58, 237, 0.5);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+  
+::-webkit-scrollbar-track {
+    @apply bg-violet-950;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-violet-600 rounded-full hover:bg-cyan-500 transition-colors;
+}
