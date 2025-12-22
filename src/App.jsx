@@ -10,7 +10,7 @@ const subgroups = [
     id: 'cp', title: 'Competitive Programming', icon: FaCode, 
     desc: 'Master DSA, algorithms, and compete in ICPC & CodeForces.',
     // Increased resolution to w=800&h=800
-    leader: { name: "Atul Kumar", batch: "Batch 2024 B1", enrollment: "2401010021", image: "/public/Atul_Pic.jpg" }
+    leader: { name: "Atul Kumar", batch: "Batch 2024 B1", enrollment: "2401010021", image: "/Atul_Pic.jpg" }
   },
   { 
     id: 'dev_os', title: 'Development & Open Source', icon: FaLaptopCode, 
@@ -280,7 +280,7 @@ function App() {
                         <div className="absolute -inset-2 border border-cyan-500/30 rounded-full"></div>
                         <div className="w-full h-full rounded-full overflow-hidden border-4 border-violet-900 bg-black relative">
                              <img 
-                                src="/public/Munaf_Pic.jpg" 
+                                src="/Munaf_Pic.jpg" 
                                 alt="President" 
                                 className="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" 
                             />
