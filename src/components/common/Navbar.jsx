@@ -2,10 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes, FaCube, FaAtom } from 'react-icons/fa';
 
+// --- UTILITY: SMOOTH SCROLL FUNCTION ---
+const handleSmoothScroll = (e, href) => {
+    e.preventDefault(); // Stop the default "jump"
+    
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    
+    if (element) {
+        element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+        });
+    }
+};
+
 // --- LOGO COMPONENT ---
 const PWLogo = () => (
     <motion.a 
         href="#"
+        onClick={(e) => handleSmoothScroll(e, '#')} // Scroll to top smoothly
         className="flex items-center gap-3 group cursor-pointer"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -32,10 +48,16 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
     const mobileClasses = "text-2xl py-4 border-b border-white/10 w-full text-center";
     const desktopClasses = "relative px-2 py-1 text-xs font-bold tracking-widest text-gray-400 hover:text-white transition-colors uppercase font-tech group";
 
+    // Combined click handler
+    const handleClick = (e) => {
+        if (onClick) onClick(); // Close mobile menu if prop exists
+        handleSmoothScroll(e, href); // Trigger smooth scroll
+    };
+
     return (
         <a 
             href={href} 
-            onClick={onClick}
+            onClick={handleClick}
             className={isMobile ? mobileClasses : desktopClasses}
         >
             <span className="relative z-10 flex items-center gap-2 justify-center">
@@ -56,18 +78,27 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
 };
 
 // --- CTA BUTTON COMPONENT ---
-const CTAButton = ({ href, children, isMobile }) => (
-    <a 
-        href={href}
-        className={`${isMobile ? 'w-full mt-6 py-4' : 'px-6 py-2'} relative overflow-hidden bg-white/5 hover:bg-cyan-500/20 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 hover:text-white rounded transition-all duration-300 group`}
-    >
-        <span className="relative z-10 text-xs font-bold tracking-widest font-tech uppercase flex items-center justify-center gap-2">
-            <FaAtom className={`text-sm ${isMobile ? 'animate-spin-slow' : 'group-hover:animate-spin'}`} />
-            {children}
-        </span>
-        <div className="absolute inset-0 bg-cyan-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-    </a>
-);
+const CTAButton = ({ href, children, isMobile, onClick }) => {
+    
+    const handleClick = (e) => {
+        if (onClick) onClick();
+        handleSmoothScroll(e, href);
+    };
+
+    return (
+        <a 
+            href={href}
+            onClick={handleClick}
+            className={`${isMobile ? 'w-full mt-6 py-4' : 'px-6 py-2'} relative overflow-hidden bg-white/5 hover:bg-cyan-500/20 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 hover:text-white rounded transition-all duration-300 group`}
+        >
+            <span className="relative z-10 text-xs font-bold tracking-widest font-tech uppercase flex items-center justify-center gap-2">
+                <FaAtom className={`text-sm ${isMobile ? 'animate-spin-slow' : 'group-hover:animate-spin'}`} />
+                {children}
+            </span>
+            <div className="absolute inset-0 bg-cyan-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+        </a>
+    );
+};
 
 const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
@@ -86,7 +117,6 @@ const Navbar = () => {
                 initial={{ y: -100 }} 
                 animate={{ y: 0 }}
                 transition={{ duration: 0.5 }}
-                // UPDATED: Logic to completely remove border when not scrolled
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
                     ${scrolled 
                         ? 'bg-[#030014]/80 backdrop-blur-xl py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-white/10' 
