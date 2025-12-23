@@ -2,18 +2,30 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FaBars, FaTimes, FaCube, FaAtom } from 'react-icons/fa';
 
-// --- UTILITY: SMOOTH SCROLL FUNCTION ---
+// --- UTILITY: SMOOTH SCROLL FUNCTION (FIXED) ---
 const handleSmoothScroll = (e, href) => {
     e.preventDefault(); // Stop the default "jump"
     
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    
-    if (element) {
-        element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-        });
+    // 1. Update the URL in the browser address bar without reloading
+    if (href === '#') {
+        // If logo is clicked, clear the hash or set to '#'
+        window.history.pushState({}, "", window.location.pathname);
+        // Scroll to the absolute top of the page
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+        // Update URL to show the section (e.g., #hierarchy)
+        window.history.pushState({}, "", href);
+        
+        // Find element and scroll
+        const targetId = href.replace('#', '');
+        const element = document.getElementById(targetId);
+        
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start',
+            });
+        }
     }
 };
 
@@ -21,15 +33,14 @@ const handleSmoothScroll = (e, href) => {
 const PWLogo = () => (
     <motion.a 
         href="#"
-        onClick={(e) => handleSmoothScroll(e, '#')} // Scroll to top smoothly
+        // Pass '#' to trigger the "Scroll to Top" logic
+        onClick={(e) => handleSmoothScroll(e, '#')} 
         className="flex items-center gap-3 group cursor-pointer"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
     >
         <div className="relative w-10 h-10 flex items-center justify-center bg-white text-black font-black font-tech text-xl rounded-lg shadow-[0_0_15px_rgba(255,255,255,0.3)] group-hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] transition-all duration-300">
             <span className="relative z-10">PW</span>
-            
-            {/* Tech Decoration on Logo */}
             <div className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-cyan-500 rounded-full animate-pulse border-2 border-[#030014]"></div>
             <div className="absolute inset-0 border border-white/20 rounded-lg group-hover:scale-110 transition-transform duration-300"></div>
         </div>
@@ -48,10 +59,9 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
     const mobileClasses = "text-2xl py-4 border-b border-white/10 w-full text-center";
     const desktopClasses = "relative px-2 py-1 text-xs font-bold tracking-widest text-gray-400 hover:text-white transition-colors uppercase font-tech group";
 
-    // Combined click handler
     const handleClick = (e) => {
         if (onClick) onClick(); // Close mobile menu if prop exists
-        handleSmoothScroll(e, href); // Trigger smooth scroll
+        handleSmoothScroll(e, href); // Trigger smooth scroll & URL update
     };
 
     return (
@@ -65,7 +75,6 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
                 {children}
             </span>
             
-            {/* Desktop Hover Effect: Brackets & Glow */}
             {!isMobile && (
                 <>
                     <span className="absolute left-0 top-0 text-cyan-500 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">[</span>
@@ -104,7 +113,6 @@ const Navbar = () => {
     const [scrolled, setScrolled] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-    // Handle scroll effect
     useEffect(() => {
         const handleScroll = () => setScrolled(window.scrollY > 20);
         window.addEventListener('scroll', handleScroll);
@@ -125,15 +133,13 @@ const Navbar = () => {
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                     <PWLogo />
 
-                    {/* --- DESKTOP MENU --- */}
                     <div className="hidden md:flex items-center gap-8">
                         <NavLink href="#hierarchy">Structure</NavLink>
                         <NavLink href="#intel">Intel</NavLink>
-                        <div className="w-px h-4 bg-white/20"></div> {/* Separator */}
+                        <div className="w-px h-4 bg-white/20"></div>
                         <CTAButton href="#army">Join Army</CTAButton>
                     </div>
 
-                    {/* --- MOBILE TOGGLE --- */}
                     <button 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="md:hidden text-white text-2xl p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -143,7 +149,6 @@ const Navbar = () => {
                 </div>
             </motion.nav>
 
-            {/* --- MOBILE MENU OVERLAY --- */}
             <AnimatePresence>
                 {mobileMenuOpen && (
                     <motion.div 
@@ -153,7 +158,6 @@ const Navbar = () => {
                         transition={{ type: "spring", damping: 20 }}
                         className="fixed inset-0 z-40 bg-[#05020a] md:hidden pt-28 px-6 flex flex-col items-center"
                     >
-                        {/* Background Grid for Mobile Menu */}
                         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
                         
                         <div className="flex flex-col w-full gap-2 relative z-10 font-tech">
