@@ -1,4 +1,4 @@
-<h1>**Project Title: IOI Tech Club Portal (Frontend Prototype)**</h1>
+<h1>Project Title: IOI Tech Club Portal (Frontend Prototype)</h1>
 
 
 Description: A visually immersive, cyberpunk-themed landing page designed for the "IOI: Institute of Innovation" student technical club. The website features a high-performance, futuristic UI that blends 3D elements with smooth animations to engage students and showcase the club's hierarchy and domains.
