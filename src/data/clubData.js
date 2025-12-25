@@ -24,7 +24,7 @@ export const subgroups = [
   },
   {
     id: 'aiml',
-    title: 'AI/ML', // AI / ML
+    title: 'Data Science', // AI / ML
     desc: 'Pushing the boundaries of Neural Networks, Generative AI, and Predictive Modeling.',
     icon: FaRobot,
     // --- 2 LEADERS ---
