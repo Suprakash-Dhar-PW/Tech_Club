@@ -1,185 +1,200 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaCrown, FaNetworkWired, FaServer, FaCode } from 'react-icons/fa';
+import { FaCrown, FaServer, FaCode, FaShieldAlt, FaBrain, FaBullhorn, FaUserTie } from 'react-icons/fa';
 import TiltCard from '../common/TiltCard';
-import { subgroups } from '../../data/clubData';
 
-// --- DOMAIN IMAGE MAPPING (UPDATED) ---
-const DOMAIN_IMAGES = {
-    // 1. Competitive Programming
-    "Competitive Programming": "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80",
-    
-    // 2. Development & Open Source (UPDATED)
-    // Option A: Futuristic Workspace Object (Selected)
-    "Development & Open Source": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80", 
-    // Option B: Abstract 3D Network Object (Uncomment to use)
-    // "Development & Open Source": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=800&q=80",
-    
-    // Variations for safety
-    "Web Development": "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=800&q=80",
-    "App Development": "https://images.unsplash.com/photo-1551650975-87deedd944c3?auto=format&fit=crop&w=800&q=80",
-
-    // 3. AIML / Data Science
-    "AIML / Data Science": "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80",
-    "AI & Machine Learning": "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&w=800&q=80",
-
-    // 4. Cyber Security
-    "Cyber Security": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-    "Cybersecurity": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
-
-    // Cloud Computing
-    "Cloud Computing": "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80",
-
-    // Fallback Image
-    "default": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80"
+// --- DATA STRUCTURE ---
+const hierarchyData = {
+    topNode: {
+        title: "President",
+        icon: FaCrown,
+        color: "from-amber-400 to-orange-600"
+    },
+    middleNodes: [
+        {
+            title: "Vice President",
+            icon: FaUserTie,
+            color: "from-blue-400 to-indigo-600"
+        },
+        {
+            title: "Operations & Comms",
+            icon: FaBullhorn,
+            color: "from-pink-500 to-rose-500"
+        }
+    ],
+    // REORDERED: Cyber Security is last
+    techDomains: [
+        {
+            id: 1,
+            title: "Competitive Programming",
+            icon: FaCode,
+            image: "https://images.unsplash.com/photo-1515879218367-8466d910aaa4?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            id: 2,
+            title: "Development & Open Source",
+            icon: FaServer,
+            image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            id: 4,
+            title: "AI/ML & Data Science",
+            icon: FaBrain,
+            image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80"
+        },
+        {
+            id: 3,
+            title: "Cyber Security",
+            icon: FaShieldAlt,
+            image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
+        }
+    ]
 };
 
-// --- Animated Connection Line ---
+// --- ANIMATED LINE COMPONENT ---
 const DataStream = ({ className, vertical = false }) => (
     <div className={`relative overflow-hidden ${className} bg-white/5`}>
         <motion.div 
-            className={`absolute inset-0 ${vertical ? 'w-full h-full bg-gradient-to-b' : 'w-full h-full bg-gradient-to-r'} from-transparent via-cyan-500 to-transparent opacity-50`}
+            className={`absolute inset-0 ${vertical ? 'w-full h-full bg-gradient-to-b' : 'w-full h-full bg-gradient-to-r'} from-transparent via-cyan-500 to-transparent opacity-80`}
             animate={vertical ? { top: ['-100%', '100%'] } : { left: ['-100%', '100%'] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
         />
     </div>
 );
 
 const Hierarchy = () => {
   return (
-    <section id="hierarchy" className="py-24 relative overflow-hidden bg-[#05020a]">
-      {/* Background Grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:60px_60px] pointer-events-none"></div>
-
-      {/* --- HEADER --- */}
-      <div className="text-center mb-20 relative z-10 px-4">
-         <div className="inline-flex items-center gap-2 border border-violet-500/30 bg-violet-500/10 px-4 py-1 rounded-full mb-4 backdrop-blur-md">
-            <FaNetworkWired className="text-violet-400 text-xs" />
-            <span className="text-violet-300 font-mono text-[10px] tracking-[0.2em] uppercase">Network Topology</span>
-         </div>
-         <h2 className="text-4xl md:text-5xl font-bold text-white font-tech tracking-tight drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
-            CHAIN OF <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">COMMAND</span>
-         </h2>
-      </div>
+    <section id="hierarchy" className="py-24 relative overflow-hidden bg-[#030014]">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-900/20 via-[#030014] to-[#030014] pointer-events-none"></div>
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:50px_50px] pointer-events-none opacity-50"></div>
 
       <div className="flex flex-col items-center w-full max-w-7xl mx-auto px-4 relative z-10">
-        
-        {/* --- LEVEL 1: PRESIDENT --- */}
+
+        {/* =========================================
+            LEVEL 1: PRESIDENT
+        ========================================= */}
         <motion.div 
             initial={{ scale: 0.9, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
-            className="relative z-20 mb-0"
+            className="relative z-30 mb-0"
         >
-            <div className="absolute inset-0 bg-violet-600/20 blur-3xl rounded-full animate-pulse-slow"></div>
-            
-            <div className="relative bg-[#0d071a]/90 backdrop-blur-sm border border-violet-500/50 pr-8 pl-6 py-6 rounded-2xl flex flex-col md:flex-row items-center gap-6 shadow-[0_0_50px_rgba(124,58,237,0.15)] hover:border-violet-400 transition-colors duration-300 group">
-                <div className="absolute -inset-1 border border-dashed border-violet-500/20 rounded-2xl animate-spin-slow pointer-events-none"></div>
-                
-                <div className="relative">
-                    <div className="w-20 h-20 bg-gradient-to-br from-amber-400 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg transform group-hover:scale-105 transition-transform duration-300">
-                        <FaCrown className="text-4xl text-white drop-shadow-md" />
-                    </div>
-                    <div className="absolute -bottom-3 -right-3 bg-black border border-white/20 px-2 py-0.5 rounded text-[9px] font-mono text-green-400 shadow-xl">ONLINE</div>
+            <div className="relative bg-[#0d071a]/60 backdrop-blur-md border border-amber-500/30 px-10 py-5 rounded-2xl flex flex-col items-center gap-3 shadow-[0_0_50px_rgba(245,158,11,0.15)] hover:shadow-[0_0_70px_rgba(245,158,11,0.25)] transition-shadow duration-500">
+                <div className={`w-14 h-14 bg-gradient-to-br ${hierarchyData.topNode.color} rounded-xl flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform`}>
+                    <hierarchyData.topNode.icon className="text-2xl text-white" />
                 </div>
-
-                <div className="text-center md:text-left md:border-l md:border-white/10 md:pl-6">
-                    <div className="flex items-center justify-center md:justify-start gap-2 mb-2">
-                        <span className="text-[10px] text-gray-400 font-mono tracking-widest">ROOT_ACCESS</span>
-                        <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                    </div>
-                    <h3 className="text-3xl font-bold text-white leading-none font-tech tracking-wide mb-1">PRESIDENT</h3>
-                    <p className="text-xs text-violet-300 font-mono uppercase tracking-[0.2em]">System Administrator</p>
-                </div>
+                <h3 className="text-xl font-bold text-white leading-none font-tech tracking-wide">{hierarchyData.topNode.title}</h3>
+                <div className="absolute -bottom-2 w-3 h-3 bg-amber-500 rounded-full shadow-[0_0_10px_orange]"></div>
             </div>
         </motion.div>
 
-        {/* --- CONNECTORS --- */}
-        <div className="flex flex-col items-center w-full max-w-[85%] relative">
-             <div className="w-px h-16 bg-white/10 relative"><DataStream className="h-full w-full" vertical={true} /></div>
-             <div className="hidden md:flex w-full h-px bg-white/10 relative justify-between">
+        {/* CONNECTOR: Level 1 -> Level 2 */}
+        <div className="flex flex-col items-center h-20 w-full relative max-w-4xl">
+            <div className="w-px h-10 bg-white/10 relative">
+                <DataStream className="h-full w-full" vertical={true} />
+            </div>
+            <div className="w-[50%] md:w-[300px] h-px bg-white/10 relative flex justify-between">
                  <DataStream className="h-full w-full" />
-                 <div className="absolute top-1/2 left-0 -translate-y-1/2 w-2 h-2 bg-cyan-500 rounded-full shadow-[0_0_10px_cyan]"></div>
-                 <div className="absolute top-1/2 right-0 -translate-y-1/2 w-2 h-2 bg-cyan-500 rounded-full shadow-[0_0_10px_cyan]"></div>
-                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-violet-500 rounded-full"></div>
+                 <div className="absolute left-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-cyan-500 rounded-full shadow-[0_0_10px_cyan]"></div>
+                 <div className="absolute right-0 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-cyan-500 rounded-full shadow-[0_0_10px_cyan]"></div>
+                 <div className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 w-2 h-2 bg-amber-500 rounded-full shadow-[0_0_10px_orange]"></div>
+                 <div className="absolute left-0 top-0 w-px h-10 bg-white/10 translate-y-0">
+                    <DataStream className="h-full w-full" vertical={true} />
+                 </div>
+                 <div className="absolute right-0 top-0 w-px h-10 bg-white/10 translate-y-0">
+                    <DataStream className="h-full w-full" vertical={true} />
+                 </div>
+            </div>
+        </div>
+
+        {/* =========================================
+            LEVEL 2: VICE PRESIDENT & OPS
+        ========================================= */}
+        <div className="grid grid-cols-2 gap-8 w-full max-w-4xl relative z-20">
+            {hierarchyData.middleNodes.map((node, idx) => (
+                <div key={idx} className="flex flex-col items-center">
+                    <motion.div 
+                        initial={{ y: 20, opacity: 0 }}
+                        whileInView={{ y: 0, opacity: 1 }}
+                        transition={{ delay: 0.2 + (idx * 0.1) }}
+                        viewport={{ once: true }}
+                        className="bg-[#0e071e]/80 backdrop-blur-md border border-white/10 p-5 rounded-xl flex flex-col items-center gap-3 w-64 shadow-lg hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(34,211,238,0.1)] transition-all duration-300"
+                    >
+                        <div className={`w-12 h-12 bg-gradient-to-br ${node.color} rounded-lg flex items-center justify-center shadow-md`}>
+                            <node.icon className="text-xl text-white" />
+                        </div>
+                        <h4 className="text-lg font-bold text-white font-tech tracking-wide">{node.title}</h4>
+                        <div className="absolute -bottom-[5px] w-2 h-2 bg-cyan-500 rounded-full opacity-50"></div>
+                    </motion.div>
+                </div>
+            ))}
+        </div>
+
+        {/* CONNECTOR: Level 2 -> Level 3 */}
+        <div className="relative w-full h-16 max-w-7xl mt-0">
+             <div className="absolute inset-0 w-full">
+                <div className="absolute left-[25%] top-0 w-px h-8 bg-white/10 -translate-x-1/2">
+                    <DataStream className="h-full w-full" vertical={true} />
+                </div>
+                <div className="absolute left-[75%] top-0 w-px h-8 bg-white/10 -translate-x-1/2">
+                    <DataStream className="h-full w-full" vertical={true} />
+                </div>
              </div>
-             <div className="hidden md:grid grid-cols-4 w-full h-12">
-                 {[...Array(4)].map((_, i) => (
-                    <div key={i} className="flex justify-center h-full relative"><div className="w-px h-full bg-white/10"><DataStream className="h-full w-full" vertical={true} /></div></div>
-                 ))}
+
+             <div className="absolute top-8 left-1/2 -translate-x-1/2 w-[76%] h-px bg-white/10 flex justify-between items-center">
+                 <DataStream className="h-full w-full" />
+                 <div className="w-1 h-1 bg-cyan-500 rounded-full shadow-[0_0_5px_cyan]"></div>
+                 <div className="w-1 h-1 bg-cyan-500 rounded-full shadow-[0_0_5px_cyan]"></div>
              </div>
         </div>
 
-        {/* --- LEVEL 2: SUBGROUPS --- */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 w-full mt-4 md:mt-0">
-             {subgroups.map((sub, idx) => {
-                 const domainImage = DOMAIN_IMAGES[sub.title] || DOMAIN_IMAGES["default"];
-                 const SpecificIcon = sub.icon || FaCode;
-
-                 return (
+        {/* =========================================
+            LEVEL 3: TECHNICAL DOMAINS
+        ========================================= */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-0">
+             {hierarchyData.techDomains.map((sub, idx) => (
                  <motion.div 
-                    key={sub.id || idx} 
+                    key={sub.id} 
                     initial={{ opacity: 0, y: 30 }} 
                     whileInView={{ opacity: 1, y: 0 }} 
                     viewport={{ once: true }}
-                    transition={{ delay: idx * 0.1 }} 
+                    transition={{ delay: 0.4 + (idx * 0.1) }} 
                     className="relative group h-full"
                  >
-                     <div className="md:hidden w-px h-8 bg-white/10 mx-auto"></div> 
-                     
-                     <TiltCard className="h-full bg-[#0a0514] overflow-hidden" border="border-white/10 group-hover:border-cyan-500/50">
-                         {/* Connection Point (Desktop) */}
-                         <div className="hidden md:block absolute -top-[1px] left-1/2 -translate-x-1/2 w-8 h-[2px] bg-cyan-500 shadow-[0_0_10px_cyan] z-20"></div>
+                     <div className="absolute -top-8 left-1/2 -translate-x-1/2 w-px h-8 bg-white/10 z-0">
+                        <DataStream className="h-full w-full" vertical={true} />
+                     </div>
+
+                     <TiltCard className="h-full bg-[#0a0514] overflow-hidden rounded-xl relative z-10" border="border-white/10 group-hover:border-cyan-500/50">
+                         <div className="hidden lg:block absolute -top-[3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-cyan-500 rounded-full shadow-[0_0_8px_cyan]"></div>
 
                          <div className="flex flex-col h-full">
-                             
-                             {/* 1. Header Banner Image (Top 40%) */}
-                             <div className="h-32 w-full relative overflow-hidden border-b border-white/10">
+                             {/* Image */}
+                             <div className="h-28 w-full relative overflow-hidden">
                                  <img 
-                                    src={domainImage}
-                                    alt={sub.title}
-                                    onError={(e) => { e.target.src = DOMAIN_IMAGES["default"]; }} // Fallback if link breaks
-                                    className="w-full h-full object-cover opacity-60 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                    src={sub.image} 
+                                    alt={sub.title} 
+                                    className="w-full h-full object-cover opacity-40 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700 filter grayscale group-hover:grayscale-0"
                                  />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0514] via-transparent to-transparent"></div>
-                                 <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-0.5 rounded border border-white/10">
-                                    <span className="text-[9px] font-mono text-gray-300">NODE_{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
-                                 </div>
+                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0514] via-[#0a0514]/50 to-transparent"></div>
+                                 <div className="absolute inset-0 bg-indigo-500/10 mix-blend-overlay"></div>
                              </div>
 
-                             {/* 2. Content Body (Bottom 60%) */}
-                             <div className="relative px-5 pb-6 flex flex-col items-center flex-grow bg-[#0a0514]">
-                                 
-                                 {/* Floating Icon (The Reactor Core) - Overlaps Banner and Body */}
-                                 <div className="relative -mt-10 mb-4">
-                                     <div className="absolute inset-0 bg-cyan-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                                     <div className="w-20 h-20 rounded-2xl bg-[#0b0816] border border-white/10 flex items-center justify-center shadow-[0_5px_15px_rgba(0,0,0,0.5)] group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all duration-300 relative z-10">
-                                         <SpecificIcon className="text-3xl text-cyan-400 drop-shadow-[0_0_5px_rgba(34,211,238,0.8)]" />
-                                     </div>
+                             {/* Content */}
+                             <div className="relative px-4 pb-8 -mt-10 flex flex-col items-center flex-grow">
+                                 <div className="w-14 h-14 rounded-xl bg-[#0e071e] border border-white/10 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all duration-300 relative z-10 mb-3">
+                                     <sub.icon className="text-xl text-cyan-400 drop-shadow-[0_0_2px_rgba(34,211,238,0.8)]" />
                                  </div>
 
-                                 {/* Title */}
-                                 <h4 className="text-xl font-bold text-white mb-2 font-tech tracking-wide text-center group-hover:text-cyan-400 transition-colors">
+                                 <h4 className="text-base font-bold text-white mb-2 font-tech text-center group-hover:text-cyan-400 transition-colors tracking-wide min-h-[3rem] flex items-center justify-center">
                                      {sub.title}
                                  </h4>
-
-                                 {/* Spacer */}
-                                 <div className="flex-grow"></div>
-
-                                 {/* Status & Tech Decorations */}
-                                 <div className="w-full flex items-center justify-between border-t border-white/5 pt-3 mt-2">
-                                     <div className="flex items-center gap-1.5">
-                                         <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></div>
-                                         <span className="text-[9px] text-cyan-300 font-mono uppercase tracking-wider">Online</span>
-                                     </div>
-                                     <FaServer className="text-[10px] text-gray-600 group-hover:text-cyan-500/50 transition-colors" />
-                                 </div>
-
                              </div>
                          </div>
                      </TiltCard>
                  </motion.div>
-             )})}
+             ))}
         </div>
       </div>
     </section>

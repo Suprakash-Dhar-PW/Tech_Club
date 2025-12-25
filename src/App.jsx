@@ -4,6 +4,8 @@ import Footer from './components/common/Footer';
 import Hero from './components/sections/Hero';
 import Hierarchy from './components/sections/Hierarchy';
 import PresidentMessage from './components/sections/PresidentMessage';
+import VicePresidentMessage from './components/sections/VicePresidentMessage';
+import DeptHeads from './components/sections/DeptHeads';
 import SquadIntel from './components/sections/SquadIntel';
 import JoinArmy from './components/sections/JoinArmy';
 
@@ -22,7 +24,8 @@ function App() {
       <main className="relative z-10 max-w-7xl mx-auto px-6 space-y-36 pb-32">
         <Hierarchy />
         <PresidentMessage />
-        <SquadIntel />
+        <VicePresidentMessage />
+        <DeptHeads/>
         <JoinArmy onApply={handleApply} />
       </main>
 

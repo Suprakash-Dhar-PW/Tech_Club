@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { FaQuoteLeft, FaWifi, FaSignal, FaFingerprint, FaLock } from 'react-icons/fa';
 import TiltCard from '../common/TiltCard';
 
-// --- Animated Audio Waveform ---
+// --- Animated Audio Waveform (Reused) ---
 const AudioWave = () => (
     <div className="flex items-center gap-1 h-8">
         {[...Array(8)].map((_, i) => (
@@ -22,55 +22,17 @@ const AudioWave = () => (
     </div>
 );
 
-const PresidentMessage = () => {
+const VicePresidentMessage = () => {
   return (
-    // UPDATED: Changed py-24 to "pt-24 pb-8". 
-    // Reduced bottom padding significantly so the VP card sits close below.
-    <section className="pt-24 pb-8 relative overflow-hidden">
+    // UPDATED: Changed py-24 to "pt-0 pb-24" to remove the top gap
+    <section className="pt-0 pb-24 relative overflow-hidden">
         
         {/* Background Atmosphere */}
-        <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-0 right-0 w-[400px] h-[400px] bg-cyan-500/5 rounded-full blur-[100px] pointer-events-none"></div>
 
         <div className="relative max-w-7xl mx-auto px-6">
             
-            {/* ========================================= */}
-            {/* SECTION HEADING                           */}
-            {/* ========================================= */}
-            <div className="w-full flex flex-col items-center justify-center mb-16 relative z-20">
-                {/* Decoration Lines */}
-                <div className="flex items-center gap-4 mb-4 opacity-80">
-                    <motion.div 
-                        initial={{ width: 0 }} 
-                        whileInView={{ width: '4rem' }} 
-                        transition={{ duration: 1 }}
-                        className="h-[1px] bg-gradient-to-r from-transparent to-cyan-500"
-                    />
-                    <span className="text-cyan-400 text-[10px] font-mono tracking-[0.3em] uppercase">
-                        System Access: Alpha
-                    </span>
-                    <motion.div 
-                        initial={{ width: 0 }} 
-                        whileInView={{ width: '4rem' }} 
-                        transition={{ duration: 1 }}
-                        className="h-[1px] bg-gradient-to-l from-transparent to-cyan-500"
-                    />
-                </div>
-
-                {/* Main Title */}
-                <h2 className="text-4xl md:text-6xl font-bold text-center font-tech tracking-wider uppercase relative z-10">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-violet-500 drop-shadow-[0_0_10px_rgba(34,211,238,0.5)]">
-                        Core Leadership
-                    </span>
-                </h2>
-                
-                <p className="mt-4 text-gray-400 font-light text-sm md:text-lg tracking-wide max-w-2xl text-center">
-                    The visionaries behind <span className="text-cyan-400 font-semibold text-glow">Tech Club IOI</span>
-                </p>
-            </div>
-            {/* ========================================= */}
-
-
             {/* --- Main Interface Container --- */}
             <div className="bg-[#0a0514]/90 backdrop-blur-2xl border border-white/10 rounded-[2rem] overflow-hidden shadow-2xl relative group">
                 
@@ -96,17 +58,17 @@ const PresidentMessage = () => {
                             <TiltCard className="h-full rounded-2xl">
                                 <div className="relative h-full w-full rounded-2xl overflow-hidden border-2 border-white/10 group-hover:border-cyan-400/50 transition-colors duration-500">
                                     
-                                    {/* --- Title --- */}
+                                    {/* --- TOP BAR: Title --- */}
                                     <div className="absolute top-0 left-0 w-full bg-black/60 backdrop-blur-md py-3 border-b border-white/10 z-20 flex justify-center">
                                         <p className="text-cyan-400 text-[10px] font-mono font-bold tracking-[0.2em] uppercase">
-                                            Club President
+                                            Vice President
                                         </p>
                                     </div>
 
-                                    {/* Image */}
+                                    {/* Image - Replace src with VP's photo */}
                                     <img 
-                                        src="/Munaf_Pic.jpg" 
-                                        alt="President" 
+                                        src="/Atul_Pic.jpg" 
+                                        alt="Vice President" 
                                         className="w-full h-full object-cover filter contrast-125 saturate-0 group-hover:saturate-100 transition-all duration-700" 
                                     />
 
@@ -120,9 +82,11 @@ const PresidentMessage = () => {
                                     {/* Scanlines Overlay */}
                                     <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_4px,3px_100%] pointer-events-none opacity-50"></div>
 
-                                    {/* --- Name Tag --- */}
+                                    {/* --- BOTTOM BAR: Name --- */}
                                     <div className="absolute bottom-0 left-0 w-full bg-black/80 backdrop-blur-md p-4 border-t border-white/10 z-20">
-                                        <h4 className="text-white font-tech font-bold text-lg leading-none text-center">MD MUNAF</h4>
+                                        <h4 className="text-white font-tech font-bold text-lg leading-none text-center">
+                                            ATUL KUMAR
+                                        </h4>
                                     </div>
                                 </div>
                             </TiltCard>
@@ -141,7 +105,7 @@ const PresidentMessage = () => {
                                     <h3 className="text-xl text-white font-tech tracking-wide">INCOMING TRANSMISSION</h3>
                                     <div className="flex items-center gap-2">
                                         <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-                                        <span className="text-[10px] font-mono text-gray-400 uppercase">Live Feed // 1080ms Latency</span>
+                                        <span className="text-[10px] font-mono text-gray-400 uppercase">Live Feed // 980ms Latency</span>
                                     </div>
                                 </div>
                             </div>
@@ -156,7 +120,7 @@ const PresidentMessage = () => {
                             <FaQuoteLeft className="text-5xl text-white/5 absolute -top-4 -left-6 pointer-events-none" />
                             
                             <p className="text-lg md:text-2xl text-gray-200 font-light leading-relaxed italic relative z-10">
-                                "At <span className="text-cyan-400 font-bold not-italic font-tech text-glow">Tech Club IOI</span>, code is more than syntax, it’s a legacy—empowering every member to <span className="text-white border-b border-violet-500">learn, lead, and innovate</span>."
+                                "Bridging the gap between <span className="text-cyan-400 font-bold not-italic font-tech text-glow">Imagination</span> and <span className="text-cyan-400 font-bold not-italic font-tech text-glow">Implementation</span> to shape the <span className="text-white border-b border-violet-500">digital frontier</span>."
                             </p>
                         </div>
 
@@ -165,7 +129,7 @@ const PresidentMessage = () => {
                             <div>
                                 <p className="text-[9px] text-gray-500 font-mono uppercase mb-1">Authorization</p>
                                 <p className="text-xs text-white font-bold tracking-wider flex items-center gap-2">
-                                    <FaFingerprint className="text-violet-500" /> ALPHA-1
+                                    <FaFingerprint className="text-violet-500" /> ALPHA-2
                                 </p>
                             </div>
                             <div>
@@ -191,4 +155,4 @@ const PresidentMessage = () => {
   );
 };
 
-export default PresidentMessage;
+export default VicePresidentMessage;

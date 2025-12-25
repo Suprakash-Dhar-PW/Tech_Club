@@ -1,44 +1,31 @@
 import React, { useRef } from 'react';
 import { motion, useMotionValue, useSpring, useTransform } from 'framer-motion';
-import { FaCrown, FaUser, FaIdBadge, FaCalendarAlt, FaNetworkWired, FaGlobe, FaTerminal } from 'react-icons/fa';
+import { FaUserPlus, FaCalendarAlt, FaGlobe, FaCrosshairs, FaTerminal, FaNetworkWired, FaAngleRight } from 'react-icons/fa';
 import { subgroups } from '../../data/clubData';
 
-// --- 3D TILT CARD COMPONENT ---
-const ThreeDCard = ({ children, className }) => {
+// --- 3D TILT CONTAINER ---
+const WideTiltCard = ({ children, className }) => {
     const ref = useRef(null);
-
-    // Motion Values for 3D Tilt
     const x = useMotionValue(0);
     const y = useMotionValue(0);
-
-    // Smooth physics
-    const mouseX = useSpring(x, { stiffness: 150, damping: 15 });
-    const mouseY = useSpring(y, { stiffness: 150, damping: 15 });
-
-    // Map mouse position to rotation degrees
-    const rotateX = useTransform(mouseY, [-0.5, 0.5], ["7deg", "-7deg"]);
-    const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-7deg", "7deg"]);
+    const mouseX = useSpring(x, { stiffness: 100, damping: 20 }); // Softer spring for large cards
+    const mouseY = useSpring(y, { stiffness: 100, damping: 20 });
     
-    // Holographic sheen movement
+    // Very subtle tilt for wide cards to prevent distortion
+    const rotateX = useTransform(mouseY, [-0.5, 0.5], ["2deg", "-2deg"]); 
+    const rotateY = useTransform(mouseX, [-0.5, 0.5], ["-1deg", "1deg"]);
     const sheenX = useTransform(mouseX, [-0.5, 0.5], ["0%", "100%"]);
-    const sheenY = useTransform(mouseY, [-0.5, 0.5], ["0%", "100%"]);
 
     const handleMouseMove = (e) => {
         if (!ref.current) return;
         const rect = ref.current.getBoundingClientRect();
-        
-        // Calculate normalized position (-0.5 to 0.5)
         const xPct = (e.clientX - rect.left) / rect.width - 0.5;
         const yPct = (e.clientY - rect.top) / rect.height - 0.5;
-        
         x.set(xPct);
         y.set(yPct);
     };
 
-    const handleMouseLeave = () => {
-        x.set(0);
-        y.set(0);
-    };
+    const handleMouseLeave = () => { x.set(0); y.set(0); };
 
     return (
         <motion.div
@@ -46,152 +33,177 @@ const ThreeDCard = ({ children, className }) => {
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
             style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
-            className={`relative perspective-1000 ${className}`}
+            className={`relative perspective-2000 ${className}`} // Deeper perspective
         >
-            <div className="relative h-full transition-all duration-200 ease-linear transform-style-3d">
+            <div className="relative h-full transition-all duration-300 ease-out transform-style-3d shadow-2xl">
                 {children}
-                
-                {/* Holographic Sheen Layer */}
+                {/* Holographic Swipe Effect */}
                 <motion.div 
                     style={{ 
-                        background: `radial-gradient(circle at ${sheenX} ${sheenY}, rgba(255,255,255,0.1) 0%, transparent 60%)`,
-                        opacity: useTransform(mouseX, [-0.5, 0, 0.5], [0.4, 0, 0.4])
+                        background: `linear-gradient(90deg, transparent, rgba(255,255,255,0.05) 50%, transparent)`,
+                        left: sheenX
                     }}
-                    className="absolute inset-0 rounded-[2rem] pointer-events-none z-20 mix-blend-overlay"
+                    className="absolute inset-0 w-full h-full pointer-events-none z-30 mix-blend-overlay"
                 />
             </div>
         </motion.div>
     );
 };
 
+// --- LEADER PROFILE (Optimized for Wide Layout) ---
+const LeaderProfile = ({ data, isMulti }) => {
+    if (!data) return null;
+
+    return (
+        <div className={`relative group/profile flex items-center gap-4 bg-black/20 p-2 pr-4 rounded-xl border border-white/5 hover:border-cyan-500/30 transition-all duration-300 ${isMulti ? 'w-full' : 'w-auto'}`}>
+            {/* Hexagon-ish Image Mask */}
+            <div className="relative w-16 h-16 shrink-0 overflow-hidden rounded-lg border border-white/10 group-hover/profile:border-cyan-400/50 transition-colors">
+                <div className="absolute inset-0 bg-violet-500/10 mix-blend-overlay z-10 group-hover/profile:bg-transparent transition-colors"></div>
+                <img 
+                    src={data.image} 
+                    alt={data.name} 
+                    className="w-full h-full object-cover filter contrast-125 saturate-50 group-hover/profile:saturate-100 transition-all duration-500" 
+                />
+            </div>
+
+            {/* Text Info */}
+            <div className="flex flex-col">
+                 <span className="text-[9px] font-mono text-cyan-400 uppercase tracking-wider mb-0.5">
+                    {data.role || "COMMANDER"}
+                </span>
+                <h4 className="text-white font-bold font-tech text-sm leading-none">{data.name}</h4>
+                <div className="flex items-center gap-2 mt-1">
+                    <span className="text-[10px] text-gray-500 font-mono flex items-center gap-1">
+                        <FaCalendarAlt className="text-[8px]" /> {data.batch}
+                    </span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const JoinArmy = ({ onApply }) => {
+  // Safe load check
+  if (!subgroups) return null;
+
   return (
-    <section id="army" className="py-24 relative overflow-hidden bg-[#030014]">
-         {/* --- 3D Background Grid --- */}
-         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
+    <section id="army" className="py-24 relative bg-[#030014] overflow-hidden">
+         {/* --- Background Matrix --- */}
+         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:60px_60px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
          
-         {/* --- Header --- */}
-         <div className="text-center mb-20 relative z-10 px-4">
+         {/* --- Section Title --- */}
+         <div className="text-center mb-16 relative z-10 px-4">
              <motion.div 
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-3 border border-violet-500/30 px-5 py-2 rounded-lg bg-violet-900/10 backdrop-blur-md mb-6"
+                className="inline-flex items-center gap-3 border border-cyan-500/30 px-6 py-2 rounded-full bg-cyan-950/10 backdrop-blur-md mb-6"
              >
-                <FaGlobe className="text-violet-400 text-xs animate-spin-slow" />
-                <span className="text-violet-300 font-mono text-xs tracking-[0.2em] uppercase">Global Recruitment Protocol</span>
+                <FaGlobe className="text-cyan-400 text-xs animate-pulse" />
+                <span className="text-cyan-300 font-mono text-xs tracking-[0.3em] uppercase">Recruitment Channels Open</span>
              </motion.div>
              
-             <h2 className="text-5xl md:text-6xl font-bold text-white mb-4 font-tech tracking-tight">
-                 Join the <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-cyan-400">Vanguard</span>
+             <h2 className="text-5xl md:text-7xl font-bold text-white mb-6 font-tech tracking-tight">
+                 Choose Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-white to-violet-400">Division</span>
              </h2>
-             <p className="text-gray-400 font-light max-w-xl mx-auto text-sm md:text-base leading-relaxed">
-                 Select a specialized unit. Engage in real-world projects. Build the future.
-             </p>
          </div>
 
-         {/* --- 3D Cards Grid --- */}
-         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 relative z-10 max-w-[1300px] mx-auto px-6">
-            {subgroups.map((sub, idx) => (
-                <ThreeDCard key={sub.id} className="group">
-                    <motion.div 
-                        initial={{ opacity: 0, y: 50 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ delay: idx * 0.1, duration: 0.5 }}
-                        className="relative h-full bg-[#080512] border border-white/10 rounded-[2rem] overflow-hidden flex flex-col md:flex-row group-hover:border-violet-500/40 transition-colors duration-500"
-                    >
-                        {/* --- LEFT: Leader Dossier --- */}
-                        <div className="md:w-2/5 bg-[#0b0816] border-b md:border-b-0 md:border-r border-white/5 p-8 flex flex-col items-center justify-center relative">
-                            {/* Tech Background Pattern */}
-                            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5"></div>
-                            
-                            {/* HUD Corners */}
-                            <div className="absolute top-4 left-4 w-2 h-2 border-t border-l border-cyan-500/50"></div>
-                            <div className="absolute top-4 right-4 w-2 h-2 border-t border-r border-cyan-500/50"></div>
-                            <div className="absolute bottom-4 left-4 w-2 h-2 border-b border-l border-cyan-500/50"></div>
-                            <div className="absolute bottom-4 right-4 w-2 h-2 border-b border-r border-cyan-500/50"></div>
+         {/* --- STACK LAYOUT (One Row = One Domain) --- */}
+         <div className="max-w-5xl mx-auto px-6 flex flex-col gap-8 relative z-10">
+            {subgroups.map((sub, idx) => {
+                // Determine Leaders Logic
+                const leadersList = sub?.leaders && sub.leaders.length > 0 
+                    ? sub.leaders 
+                    : (sub?.leader ? [sub.leader] : []);
+                
+                const isMulti = leadersList.length > 1;
 
-                            {/* Badge */}
-                            <div className="absolute top-6 left-1/2 -translate-x-1/2 w-max">
-                                <span className="text-[9px] font-mono text-cyan-500/80 tracking-widest uppercase border border-cyan-500/20 px-2 py-1 rounded bg-cyan-900/10">
-                                    UNIT COMMANDER
-                                </span>
-                            </div>
+                return (
+                    <WideTiltCard key={sub.id || idx} className="w-full">
+                        <motion.div 
+                            initial={{ opacity: 0, x: idx % 2 === 0 ? -50 : 50 }}
+                            whileInView={{ opacity: 1, x: 0 }}
+                            viewport={{ once: true, margin: "-50px" }}
+                            transition={{ duration: 0.6, delay: idx * 0.1 }}
+                            className="relative w-full bg-[#090516]/80 backdrop-blur-xl border border-white/10 rounded-[1.5rem] overflow-hidden group hover:border-cyan-500/40 transition-colors duration-500"
+                        >
+                            {/* Scanning Line Animation */}
+                            <div className="absolute top-0 left-0 w-[2px] h-full bg-gradient-to-b from-transparent via-cyan-400 to-transparent opacity-0 group-hover:opacity-100 group-hover:left-[100%] transition-all duration-[1.5s] ease-in-out z-20"></div>
 
-                            {/* Image */}
-                            <div className="w-32 h-40 mt-6 rounded-xl overflow-hidden border border-white/10 shadow-2xl relative z-10 group-hover:border-cyan-500/40 transition-colors duration-500">
-                                <div className="absolute inset-0 bg-violet-900/20 mix-blend-overlay z-10 group-hover:bg-transparent transition-colors"></div>
-                                <img 
-                                    src={sub.leader.image} 
-                                    alt={sub.leader.name} 
-                                    className="w-full h-full object-cover filter contrast-110" 
-                                />
-                            </div>
-
-                            {/* Name & Title */}
-                            <div className="mt-5 text-center w-full relative z-10">
-                                <h3 className="text-xl font-bold text-white font-tech leading-tight">{sub.leader.name}</h3>
+                            <div className="flex flex-col md:flex-row min-h-[220px]">
                                 
-                                <div className="mt-4 grid grid-cols-1 gap-2 w-full max-w-[180px] mx-auto">
-                                    <div className="flex justify-between items-center text-[10px] font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded border border-white/5">
-                                        <span className="flex items-center gap-1"><FaCalendarAlt /> BATCH</span>
-                                        <span className="text-gray-200">{sub.leader.batch}</span>
-                                    </div>
-                                    <div className="flex justify-between items-center text-[10px] font-mono text-gray-400 bg-white/5 px-3 py-1.5 rounded border border-white/5">
-                                        <span className="flex items-center gap-1"><FaIdBadge /> ID</span>
-                                        <span className="text-gray-200">{sub.leader.enrollment}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                {/* --- LEFT: DOMAIN IDENTITY (35%) --- */}
+                                <div className="md:w-[35%] bg-gradient-to-br from-white/5 to-transparent p-8 flex flex-col justify-between border-b md:border-b-0 md:border-r border-white/5 relative">
+                                    {/* Tech Background */}
+                                    <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-5"></div>
+                                    <FaNetworkWired className="absolute -bottom-4 -right-4 text-8xl text-white/5 rotate-12" />
 
-                        {/* --- RIGHT: Mission Data --- */}
-                        <div className="md:w-3/5 p-8 flex flex-col justify-between bg-gradient-to-br from-transparent to-violet-900/5 relative">
-                            {/* Decorative Line */}
-                            <div className="absolute left-0 top-10 w-1 h-12 bg-gradient-to-b from-cyan-500 to-violet-500 rounded-r-full"></div>
-
-                            <div className="relative z-10 transform-style-3d" style={{ transform: "translateZ(20px)" }}>
-                                <div className="flex items-center gap-4 mb-5">
-                                    <div className="p-3 bg-white/5 rounded-xl border border-white/10 text-cyan-400 text-2xl shadow-inner">
-                                        <sub.icon />
-                                    </div>
-                                    <div>
-                                        <h2 className="text-2xl font-bold text-white font-tech">{sub.title}</h2>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                                            <span className="text-[10px] text-gray-500 uppercase tracking-wider font-mono">Operations Active</span>
+                                    <div className="relative z-10">
+                                        <div className="w-12 h-12 rounded-lg bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 text-2xl mb-4 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+                                            {sub.icon ? <sub.icon /> : <FaTerminal />}
                                         </div>
+                                        <h3 className="text-2xl font-bold text-white font-tech uppercase tracking-wide leading-tight">
+                                            {sub.title}
+                                        </h3>
+                                        <p className="text-gray-400 text-xs mt-3 leading-relaxed font-light border-l-2 border-cyan-500/30 pl-3">
+                                            {sub.desc}
+                                        </p>
+                                    </div>
+                                    
+                                    <div className="mt-6 flex items-center gap-2">
+                                        <div className={`w-2 h-2 rounded-full ${isMulti ? 'bg-cyan-400' : 'bg-green-500'} animate-pulse`}></div>
+                                        <span className="text-[10px] text-gray-500 font-mono uppercase tracking-wider">
+                                            {isMulti ? 'Joint Command' : 'Unit Active'}
+                                        </span>
                                     </div>
                                 </div>
-                                
-                                <p className="text-sm text-gray-400 leading-relaxed font-light border-l border-white/10 pl-4 mb-8">
-                                    {sub.desc}
-                                </p>
-                            </div>
 
-                            {/* Buttons */}
-                            <div className="grid grid-cols-2 gap-4 mt-auto relative z-20 transform-style-3d" style={{ transform: "translateZ(30px)" }}>
-                                <button 
-                                    onClick={() => onApply('CORE', sub.title)}
-                                    className="relative overflow-hidden py-3 bg-white text-black hover:bg-cyan-400 rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all duration-300 shadow-lg group/btn"
-                                >
-                                    <span className="relative z-10 flex items-center justify-center gap-2">
-                                        <FaCrown className="text-sm" /> Apply Core
-                                    </span>
-                                </button>
-                                
-                                <button 
-                                    onClick={() => onApply('MEMBER', sub.title)}
-                                    className="relative py-3 bg-transparent border border-white/20 hover:border-white/50 text-gray-300 hover:text-white rounded-lg font-bold text-[10px] uppercase tracking-wider transition-all duration-300 flex items-center justify-center gap-2"
-                                >
-                                    <FaUser className="text-sm" /> Join Member
-                                </button>
+                                {/* --- MIDDLE: LEADERS GRID (40%) --- */}
+                                <div className="md:w-[40%] p-6 flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/5 relative bg-[#05030a]">
+                                    {/* Badge */}
+                                    <div className="absolute top-4 right-4">
+                                        <span className={`text-[9px] font-mono border px-2 py-1 rounded ${isMulti ? 'border-cyan-500/30 text-cyan-400' : 'border-white/10 text-gray-500'}`}>
+                                            {isMulti ? 'DUAL LEADERSHIP' : 'UNIT HEAD'}
+                                        </span>
+                                    </div>
+
+                                    <div className={`grid ${isMulti ? 'grid-cols-1 gap-3' : 'grid-cols-1'} w-full mt-4`}>
+                                        {leadersList.map((leader, i) => (
+                                            <LeaderProfile key={i} data={leader} isMulti={isMulti} />
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* --- RIGHT: ACTION AREA (25%) --- */}
+                                <div className="md:w-[25%] p-6 flex flex-col justify-center items-center bg-gradient-to-l from-cyan-900/10 to-transparent relative group/btn-area">
+                                    <div className="absolute inset-0 bg-cyan-500/5 opacity-0 group-hover/btn-area:opacity-100 transition-opacity duration-500"></div>
+                                    
+                                    <button 
+                                        onClick={() => onApply && onApply('MEMBER', sub.title)}
+                                        className="relative w-full group/btn overflow-hidden rounded-xl bg-white text-black font-bold py-4 px-6 flex items-center justify-between transition-all hover:scale-[1.02] shadow-[0_0_20px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(34,211,238,0.4)]"
+                                    >
+                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-300 via-white to-cyan-300 opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                        
+                                        <span className="relative z-10 flex flex-col items-start">
+                                            <span className="text-[10px] uppercase tracking-widest opacity-60">Status: Open</span>
+                                            <span className="text-lg font-tech tracking-wide flex items-center gap-2">
+                                                JOIN MEMBER <FaAngleRight />
+                                            </span>
+                                        </span>
+                                        
+                                        <FaUserPlus className="relative z-10 text-xl group-hover/btn:translate-x-1 transition-transform" />
+                                    </button>
+
+                                    <div className="mt-4 flex items-center gap-3 text-[10px] text-gray-500 font-mono">
+                                        <FaCrosshairs />
+                                        <span>ENCRYPTION: SECURE</span>
+                                    </div>
+                                </div>
+
                             </div>
-                        </div>
-                    </motion.div>
-                </ThreeDCard>
-            ))}
+                        </motion.div>
+                    </WideTiltCard>
+                );
+            })}
          </div>
     </section>
   );
