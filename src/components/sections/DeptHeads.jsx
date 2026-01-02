@@ -24,7 +24,7 @@ const AudioWave = () => (
 
 const DeptHeads = () => {
   return (
-    <section className="pt-24 pb-24 relative overflow-hidden">
+    <section id="operations" className="pt-24 pb-24 relative overflow-hidden" >
         
         {/* --- Background Atmosphere --- */}
         <div className="absolute top-1/4 left-0 w-[800px] h-[800px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none animate-pulse-slow"></div>
@@ -209,4 +209,4 @@ const DeptHeads = () => {
   );
 };
 
-export default DeptHeads;
+export default DeptHeads; 

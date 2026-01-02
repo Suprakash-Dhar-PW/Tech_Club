@@ -26,7 +26,7 @@ const PresidentMessage = () => {
   return (
     // UPDATED: Changed py-24 to "pt-24 pb-8". 
     // Reduced bottom padding significantly so the VP card sits close below.
-    <section className="pt-24 pb-8 relative overflow-hidden">
+    <section id='leaders' className="pt-24 pb-8 relative overflow-hidden">
         
         {/* Background Atmosphere */}
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-violet-600/10 rounded-full blur-[120px] pointer-events-none"></div>
@@ -103,11 +103,11 @@ const PresidentMessage = () => {
                                         </p>
                                     </div>
 
-                                    {/* Image */}
+                                    {/* Image (REMOVED grayscale & opacity transitions) */}
                                     <img 
                                         src="/Munaf_Pic.jpg" 
                                         alt="President" 
-                                        className="w-full h-full object-cover filter contrast-125 saturate-0 group-hover:saturate-100 transition-all duration-700" 
+                                        className="w-full h-full object-cover transition-all duration-700 hover:scale-105" 
                                     />
 
                                     {/* Hologram Scan Effect */}
@@ -182,8 +182,8 @@ const PresidentMessage = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>

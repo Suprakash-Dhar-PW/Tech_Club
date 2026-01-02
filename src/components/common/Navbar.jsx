@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FaBars, FaTimes, FaCube, FaAtom } from 'react-icons/fa';
+import { FaBars, FaTimes, FaAtom, FaRocket, FaUserSecret, FaCogs } from 'react-icons/fa';
 
-// --- UTILITY: SMOOTH SCROLL FUNCTION (FIXED) ---
+// --- UTILITY: SMOOTH SCROLL FUNCTION ---
 const handleSmoothScroll = (e, href) => {
-    e.preventDefault(); // Stop the default "jump"
+    e.preventDefault();
     
-    // 1. Update the URL in the browser address bar without reloading
     if (href === '#') {
-        // If logo is clicked, clear the hash or set to '#'
         window.history.pushState({}, "", window.location.pathname);
-        // Scroll to the absolute top of the page
         window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
-        // Update URL to show the section (e.g., #hierarchy)
         window.history.pushState({}, "", href);
-        
-        // Find element and scroll
         const targetId = href.replace('#', '');
         const element = document.getElementById(targetId);
         
         if (element) {
-            element.scrollIntoView({
-                behavior: 'smooth',
-                block: 'start',
+            // Offset for fixed navbar
+            const offset = 80; 
+            const elementPosition = element.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
             });
         }
     }
@@ -33,7 +32,6 @@ const handleSmoothScroll = (e, href) => {
 const PWLogo = () => (
     <motion.a 
         href="#"
-        // Pass '#' to trigger the "Scroll to Top" logic
         onClick={(e) => handleSmoothScroll(e, '#')} 
         className="flex items-center gap-3 group cursor-pointer"
         whileHover={{ scale: 1.05 }}
@@ -56,12 +54,12 @@ const PWLogo = () => (
 
 // --- NAV LINK COMPONENT ---
 const NavLink = ({ href, children, isMobile = false, onClick }) => {
-    const mobileClasses = "text-2xl py-4 border-b border-white/10 w-full text-center";
-    const desktopClasses = "relative px-2 py-1 text-xs font-bold tracking-widest text-gray-400 hover:text-white transition-colors uppercase font-tech group";
+    const mobileClasses = "text-xl py-4 border-b border-white/10 w-full text-center flex items-center justify-center gap-2";
+    const desktopClasses = "relative px-2 py-1 text-xs font-bold tracking-widest text-gray-400 hover:text-white transition-colors uppercase font-tech group flex items-center gap-2 cursor-pointer";
 
     const handleClick = (e) => {
-        if (onClick) onClick(); // Close mobile menu if prop exists
-        handleSmoothScroll(e, href); // Trigger smooth scroll & URL update
+        if (onClick) onClick();
+        handleSmoothScroll(e, href);
     };
 
     return (
@@ -70,8 +68,7 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
             onClick={handleClick}
             className={isMobile ? mobileClasses : desktopClasses}
         >
-            <span className="relative z-10 flex items-center gap-2 justify-center">
-                {isMobile && <FaCube className="text-cyan-500 text-[10px]" />}
+            <span className="relative z-10">
                 {children}
             </span>
             
@@ -88,7 +85,6 @@ const NavLink = ({ href, children, isMobile = false, onClick }) => {
 
 // --- CTA BUTTON COMPONENT ---
 const CTAButton = ({ href, children, isMobile, onClick }) => {
-    
     const handleClick = (e) => {
         if (onClick) onClick();
         handleSmoothScroll(e, href);
@@ -98,13 +94,13 @@ const CTAButton = ({ href, children, isMobile, onClick }) => {
         <a 
             href={href}
             onClick={handleClick}
-            className={`${isMobile ? 'w-full mt-6 py-4' : 'px-6 py-2'} relative overflow-hidden bg-white/5 hover:bg-cyan-500/20 border border-cyan-500/30 hover:border-cyan-400 text-cyan-400 hover:text-white rounded transition-all duration-300 group`}
+            className={`${isMobile ? 'w-full mt-6 py-4' : 'px-6 py-2'} relative overflow-hidden bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white rounded transition-all duration-300 group shadow-[0_0_15px_rgba(34,211,238,0.4)] hover:shadow-[0_0_25px_rgba(34,211,238,0.6)] cursor-pointer`}
         >
             <span className="relative z-10 text-xs font-bold tracking-widest font-tech uppercase flex items-center justify-center gap-2">
-                <FaAtom className={`text-sm ${isMobile ? 'animate-spin-slow' : 'group-hover:animate-spin'}`} />
+                <FaRocket className={`text-sm ${isMobile ? 'animate-bounce' : 'group-hover:-translate-y-0.5 transition-transform'}`} />
                 {children}
             </span>
-            <div className="absolute inset-0 bg-cyan-500/10 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
         </a>
     );
 };
@@ -127,19 +123,24 @@ const Navbar = () => {
                 transition={{ duration: 0.5 }}
                 className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 
                     ${scrolled 
-                        ? 'bg-[#030014]/80 backdrop-blur-xl py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-white/10' 
+                        ? 'bg-[#030014]/90 backdrop-blur-xl py-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)] border-b border-white/5' 
                         : 'bg-transparent py-6 border-none'}`}
             >
                 <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
                     <PWLogo />
 
+                    {/* --- DESKTOP MENU --- */}
                     <div className="hidden md:flex items-center gap-8">
-                        <NavLink href="#hierarchy">Structure</NavLink>
-                        <NavLink href="#intel">Intel</NavLink>
+                        <NavLink href="#leaders">Leaders</NavLink>
+                        <NavLink href="#operations">Operations</NavLink>
+                        
                         <div className="w-px h-4 bg-white/20"></div>
-                        <CTAButton href="#army">Join Army</CTAButton>
+                        
+                        {/* LINKED TO #join */}
+                        <CTAButton href="#join">Join Army</CTAButton>
                     </div>
 
+                    {/* --- MOBILE TOGGLE --- */}
                     <button 
                         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         className="md:hidden text-white text-2xl p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -149,6 +150,7 @@ const Navbar = () => {
                 </div>
             </motion.nav>
 
+            {/* --- MOBILE MENU OVERLAY --- */}
             <AnimatePresence>
                 {mobileMenuOpen && (
                     <motion.div 
@@ -156,18 +158,29 @@ const Navbar = () => {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
                         transition={{ type: "spring", damping: 20 }}
-                        className="fixed inset-0 z-40 bg-[#05020a] md:hidden pt-28 px-6 flex flex-col items-center"
+                        className="fixed inset-0 z-40 bg-[#05020a] md:hidden pt-28 px-6 flex flex-col items-center border-l border-white/10"
                     >
+                        {/* Background Grid for Mobile */}
                         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
                         
                         <div className="flex flex-col w-full gap-2 relative z-10 font-tech">
-                            <NavLink href="#hierarchy" isMobile onClick={() => setMobileMenuOpen(false)}>Structure</NavLink>
-                            <NavLink href="#intel" isMobile onClick={() => setMobileMenuOpen(false)}>Intel</NavLink>
-                            <CTAButton href="#army" isMobile onClick={() => setMobileMenuOpen(false)}>Join Army</CTAButton>
+                            <NavLink href="#leaders" isMobile onClick={() => setMobileMenuOpen(false)}>
+                                <FaUserSecret className="text-cyan-500" /> Leaders
+                            </NavLink>
+                            <NavLink href="#operations" isMobile onClick={() => setMobileMenuOpen(false)}>
+                                <FaCogs className="text-cyan-500" /> Operations
+                            </NavLink>
+                            
+                            <CTAButton href="#join" isMobile onClick={() => setMobileMenuOpen(false)}>
+                                Join Army
+                            </CTAButton>
                         </div>
                         
-                        <div className="mt-auto mb-10 text-gray-600 text-[10px] font-mono tracking-widest">
-                            SYSTEM: ONLINE
+                        <div className="mt-auto mb-10 flex flex-col items-center gap-2">
+                            <div className="text-cyan-500 animate-pulse text-2xl"><FaAtom /></div>
+                            <div className="text-gray-600 text-[10px] font-mono tracking-widest">
+                                SYSTEM: ONLINE // v2.0
+                            </div>
                         </div>
                     </motion.div>
                 )}

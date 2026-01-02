@@ -65,11 +65,11 @@ const VicePresidentMessage = () => {
                                         </p>
                                     </div>
 
-                                    {/* Image - Replace src with VP's photo */}
+                                    {/* Image - REMOVED saturate-0 (grayscale) */}
                                     <img 
                                         src="/Atul_Pic.jpg" 
                                         alt="Vice President" 
-                                        className="w-full h-full object-cover filter contrast-125 saturate-0 group-hover:saturate-100 transition-all duration-700" 
+                                        className="w-full h-full object-cover filter contrast-125 transition-all duration-700 hover:scale-105" 
                                     />
 
                                     {/* Hologram Scan Effect */}
@@ -146,8 +146,8 @@ const VicePresidentMessage = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import Navbar from './components/common/Navbar';
+import ScrollToTop from './components/common/ScrollToTop';
 import Footer from './components/common/Footer';
 import Hero from './components/sections/Hero';
 import Hierarchy from './components/sections/Hierarchy';
@@ -30,6 +31,8 @@ function App() {
       </main>
 
       <Footer />
+
+      <ScrollToTop />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { FaCrown, FaServer, FaCode, FaShieldAlt, FaBrain, FaBullhorn, FaUserTie } from 'react-icons/fa';
+import { FaCrown, FaServer, FaCode, FaShieldAlt, FaBrain, FaBullhorn, FaUserTie, FaTerminal, FaNetworkWired } from 'react-icons/fa';
 import TiltCard from '../common/TiltCard';
 
 // --- DATA STRUCTURE ---
@@ -22,7 +22,7 @@ const hierarchyData = {
             color: "from-pink-500 to-rose-500"
         }
     ],
-    // REORDERED: Cyber Security is last
+    // 5 Domains - Will be displayed in a single row
     techDomains: [
         {
             id: 1,
@@ -32,18 +32,24 @@ const hierarchyData = {
         },
         {
             id: 2,
-            title: "Development & Open Source",
-            icon: FaServer,
-            image: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80"
+            title: "Web Development",
+            icon: FaNetworkWired,
+            image: "/web-dev-logo.jpg"
         },
         {
-            id: 4,
+            id: 3,
+            title: "Open Source",
+            icon: FaTerminal,
+            image: "/OS-logo.png"
+        },
+        {
+            id: 5,
             title: "AI/ML & Data Science",
             icon: FaBrain,
             image: "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=800&q=80"
         },
         {
-            id: 3,
+            id: 4,
             title: "Cyber Security",
             icon: FaShieldAlt,
             image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80"
@@ -150,9 +156,10 @@ const Hierarchy = () => {
         </div>
 
         {/* =========================================
-            LEVEL 3: TECHNICAL DOMAINS
+            LEVEL 3: TECHNICAL DOMAINS (SINGLE ROW)
         ========================================= */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-0">
+        {/* CHANGED GRID TO 5 COLUMNS on Desktop */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 w-full mt-0">
              {hierarchyData.techDomains.map((sub, idx) => (
                  <motion.div 
                     key={sub.id} 
@@ -166,28 +173,28 @@ const Hierarchy = () => {
                         <DataStream className="h-full w-full" vertical={true} />
                      </div>
 
-                     <TiltCard className="h-full bg-[#0a0514] overflow-hidden rounded-xl relative z-10" border="border-white/10 group-hover:border-cyan-500/50">
+                     <TiltCard className="h-full bg-[#0a0514] overflow-hidden rounded-xl relative z-10" border="border-white/10 hover:border-cyan-500/50">
                          <div className="hidden lg:block absolute -top-[3px] left-1/2 -translate-x-1/2 w-1.5 h-1.5 bg-cyan-500 rounded-full shadow-[0_0_8px_cyan]"></div>
 
                          <div className="flex flex-col h-full">
-                             {/* Image */}
+                             {/* Image - Fully Visible Color */}
                              <div className="h-28 w-full relative overflow-hidden">
                                  <img 
                                     src={sub.image} 
                                     alt={sub.title} 
-                                    className="w-full h-full object-cover opacity-40 group-hover:opacity-80 group-hover:scale-110 transition-all duration-700 filter grayscale group-hover:grayscale-0"
+                                    className="w-full h-full object-cover opacity-90 transition-all duration-700 hover:scale-110"
                                  />
-                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0514] via-[#0a0514]/50 to-transparent"></div>
-                                 <div className="absolute inset-0 bg-indigo-500/10 mix-blend-overlay"></div>
+                                 <div className="absolute inset-0 bg-gradient-to-t from-[#0a0514] via-[#0a0514]/20 to-transparent"></div>
+                                 <div className="absolute inset-0 bg-indigo-500/5 mix-blend-overlay"></div>
                              </div>
 
-                             {/* Content */}
-                             <div className="relative px-4 pb-8 -mt-10 flex flex-col items-center flex-grow">
-                                 <div className="w-14 h-14 rounded-xl bg-[#0e071e] border border-white/10 flex items-center justify-center shadow-[0_4px_20px_rgba(0,0,0,0.5)] group-hover:border-cyan-500/50 group-hover:shadow-[0_0_20px_rgba(34,211,238,0.2)] transition-all duration-300 relative z-10 mb-3">
-                                     <sub.icon className="text-xl text-cyan-400 drop-shadow-[0_0_2px_rgba(34,211,238,0.8)]" />
+                             {/* Content - Constant Color */}
+                             <div className="relative px-2 pb-6 -mt-10 flex flex-col items-center flex-grow">
+                                 <div className="w-12 h-12 rounded-xl bg-[#0e071e] border border-cyan-500/50 flex items-center justify-center shadow-[0_0_20px_rgba(34,211,238,0.2)] relative z-10 mb-3">
+                                     <sub.icon className="text-lg text-cyan-400 drop-shadow-[0_0_2px_rgba(34,211,238,0.8)]" />
                                  </div>
 
-                                 <h4 className="text-base font-bold text-white mb-2 font-tech text-center group-hover:text-cyan-400 transition-colors tracking-wide min-h-[3rem] flex items-center justify-center">
+                                 <h4 className="text-sm font-bold text-cyan-400 mb-2 font-tech text-center tracking-wide min-h-[3rem] flex items-center justify-center">
                                      {sub.title}
                                  </h4>
                              </div>
