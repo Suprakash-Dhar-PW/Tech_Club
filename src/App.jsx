@@ -7,7 +7,6 @@ import Hierarchy from './components/sections/Hierarchy';
 import PresidentMessage from './components/sections/PresidentMessage';
 import VicePresidentMessage from './components/sections/VicePresidentMessage';
 import DeptHeads from './components/sections/DeptHeads';
-import SquadIntel from './components/sections/SquadIntel';
 import JoinArmy from './components/sections/JoinArmy';
 
 function App() {
