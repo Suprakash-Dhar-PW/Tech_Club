@@ -19,7 +19,7 @@ const expandedSubgroups = [
                 role: "CP LEAD", 
                 batch: "2024", 
                 enrollmentId: "2401010044", 
-                image: "/Krish.jpg" 
+                image: "/Krish1.jpeg" 
             }
         ]
     },
