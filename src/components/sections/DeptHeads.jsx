@@ -72,10 +72,11 @@ const DeptHeads = () => {
                             <TiltCard className="h-full w-full">
                                 <div className="relative h-full w-full overflow-hidden group-hover:border-r border-cyan-400/30 transition-all duration-500">
                                     
+                                    {/* REMOVED saturate-0 and group-hover:saturate-100 */}
                                     <img 
                                         src="/Manas_Tech.jpeg" 
                                         alt="Head of Operations" 
-                                        className="w-full h-full object-cover object-top filter contrast-110 saturate-0 group-hover:saturate-100 transition-all duration-700" 
+                                        className="w-full h-full object-cover object-top filter contrast-110 transition-all duration-700" 
                                     />
                                     
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-90"></div>
@@ -146,10 +147,11 @@ const DeptHeads = () => {
                             <TiltCard className="h-full w-full">
                                 <div className="relative h-full w-full overflow-hidden group-hover:border-r border-violet-400/30 transition-all duration-500">
                                     
+                                    {/* REMOVED saturate-0 and group-hover:saturate-100 */}
                                     <img 
                                         src="/SuprakashTech.jpeg" 
                                         alt="Head of Research" 
-                                        className="w-full h-full object-cover object-right filter contrast-110 saturate-0 group-hover:saturate-100 transition-all duration-700" 
+                                        className="w-full h-full object-cover object-right filter contrast-110 transition-all duration-700" 
                                     />
                                     
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-transparent to-transparent opacity-90"></div>
@@ -209,4 +211,4 @@ const DeptHeads = () => {
   );
 };
 
-export default DeptHeads; 
+export default DeptHeads;
